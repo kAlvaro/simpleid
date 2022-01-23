@@ -21,14 +21,6 @@
 
 namespace SimpleID\Crypt;
 
-if (!defined('SIMPLEID_RAND_SOURCE')) {
-    /**
-     * The source of random bits.  On Unix-like systems, this could be /dev/random
-     * or /dev/urandom
-     */
-    define('SIMPLEID_RAND_SOURCE', '/dev/urandom');
-}
-
 /**
  * Functions related to generating random bits and unique values.
  *
@@ -37,11 +29,8 @@ if (!defined('SIMPLEID_RAND_SOURCE')) {
 class Random {
 
     /**
-     * Obtains a number of random bytes.  For PHP 7 and later, this function
-     * calls the native `random_bytes()` function.  For older PHP versions,
-     * this function uses an entropy source specified
-     * in `SIMPLEID_RAND_SOURCE` or the OpenSSL or mcrypt extensions.  If
-     * `SIMPLEID_RAND_SOURCE` is not available, the mt_rand() PHP function is used.
+     * Obtains a number of random bytes.  This function calls the native
+     * `random_bytes()` function.
      *
      * @param int $num_bytes the number of bytes to generate
      * @return string a string containing random bytes
