@@ -3,6 +3,35 @@ SimpleID
 
 SimpleID is a simple, personal OpenID provider written in PHP.
 
+About this fork
+---------------
+
+This is a personal fork to incorporate the bare minimum patches to keep SimpleID
+working in recent PHP versions until I'm able to find a replacement for OpenID.
+
+I do not maintain this library, nor should you. Please refer to the [parent
+repository](https://github.com/simpleid/simpleid) for further details. OpenId
+is dead, don't use it in new developments.
+
+To download the files using [Composer](https://getcomposer.org/) you need to
+configure this fork as VCS repository in your `composer.json` file:
+
+```json
+"repositories": {
+    "simpleid/simpleid": {
+        "type": "vcs",
+        "url": "https://github.com/kAlvaro/simpleid"
+    }
+}
+```
+
+You will then be able to handle this copy of the library with exactly the same
+commands as the original, e.g.:
+
+```shell
+composer create-project simpleid/simpleid:dev-master simpleid --no-dev
+```
+
 Latest Version
 --------------
 
