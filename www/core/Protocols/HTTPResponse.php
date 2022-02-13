@@ -2,7 +2,7 @@
 /*
  * SimpleID
  *
- * Copyright (C) Kelvin Mo 2014
+ * Copyright (C) Kelvin Mo 2014-2022
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -83,7 +83,7 @@ class HTTPResponse {
             // Headers are case insensitive
             $header = self::httpCase($header);
             
-            if (isset($headers[$header])) {
+            if (isset($this->headers[$header])) {
                 // RFC 2616, section 4.2: Multiple headers with the same field
                 // name is the same as a concatenating all the headers in a single
                 // header, separated by commas.

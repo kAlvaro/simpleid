@@ -2,7 +2,7 @@
 /*
  * SimpleID
  *
- * Copyright (C) Kelvin Mo 2014
+ * Copyright (C) Kelvin Mo 2014-2022
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -201,7 +201,7 @@ class AuthManager extends Prefab {
             $module_acr = implode(' ', $event->getResults());
         }
 
-        return ($module_acr) ? $module_acr : $default_acr;
+        return (isset($module_acr)) ? $module_acr : $default_acr;
     }
 
     /**
@@ -221,6 +221,10 @@ class AuthManager extends Prefab {
         $user = $result->getUser();
         $level = $result->getAuthLevel();
         $modules = $result->getAuthModuleNames();
+
+        if (($user == null) && isset($form_state['uid'])) {
+            $user = $store->loadUser($form_state['uid']);
+        }
 
         $this->f3->set('user', $user);
 
