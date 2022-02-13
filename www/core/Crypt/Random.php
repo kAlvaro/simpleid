@@ -2,7 +2,7 @@
 /*
  * SimpleID
  *
- * Copyright (C) Kelvin Mo 2010
+ * Copyright (C) Kelvin Mo 2010-2022
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -21,6 +21,8 @@
 
 namespace SimpleID\Crypt;
 
+use Ulid\Ulid;
+
 /**
  * Functions related to generating random bits and unique values.
  *
@@ -28,9 +30,10 @@ namespace SimpleID\Crypt;
  */
 class Random {
 
+    const BASE58_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
     /**
-     * Obtains a number of random bytes.  This function calls the native
-     * `random_bytes()` function.
+     * Obtains a number of random bytes using the native `random_bytes()` function.
      *
      * @param int $num_bytes the number of bytes to generate
      * @return string a string containing random bytes
@@ -59,6 +62,32 @@ class Random {
     }
 
     /**
+     * Generates a random string that can be used as a password.
+     * 
+     * The function calls the {@link bytes()} function with the specified
+     * number of characters, then converts to a string containing only alphanumeric
+     * characters (case sensitive).  The conversion method is a form of Base58
+     * encoding, which strips out confusing characters such as I, l, O and 0.
+     *
+     * @param int $num_chars the number of characters in the password
+     * @return string the random password
+     */
+    function password($num_chars = 18) {
+        // determine mask for valid characters
+        $mask = 256 - (256 % strlen(self::BASE58_CHARS));
+
+        $result = '';
+        do {
+            $rand = self::bytes($num_chars);
+            for ($i = 0; $i < $num_chars; $i++) {
+                if (ord($rand[$i]) >= $mask) continue;
+                $result .= self::BASE58_CHARS[ord($rand[$i]) % strlen(self::BASE58_CHARS)];
+            }
+        } while (strlen($result) < $num_chars);
+        return substr($result, 0, $num_chars);
+    }
+
+    /**
      * Generates a relatively unique identifier which can be used as, among other things,
      * an OpenID association handle or an OAuth client identifier.
      *
@@ -67,16 +96,21 @@ class Random {
      * @return string a relatively unique identifier
      */
     function id() {
-        // Current: 160 [sha1:160] => [base64: <=28]
-        // nanoid: 126 [rand:126] => [base64: 21]
-        // cuid: 137 [timestamp:42] [counter:21] [fingerprint:21] [random: 42] => [base36: 24]
-        // cuid (slug): 44 [timestamp:11] [counter:11] [fingerprint:11] [random:11] => [base36:<=10]
-        // ksuid: 160 [timestamp:32] [rand:128] => [base62:27]
-        // ulid: 128 [timestamp:48] [rand:80]
-        // uuid: [rand:122]
-        $timeofday = gettimeofday();
-        $base = pack('NN', $timeofday['sec'], $timeofday['usec']) . self::bytes(32);
-        return strtr(trim(base64_encode(sha1($base, true)), '='), '+/', '-_');
+        return (string) Ulid::generate(true);
+    }
+
+    /**
+     * Generates a short-lived code as a number with a specified number of
+     * digits
+     * 
+     * Note that the identifier returned is not cryptographically secure.
+     *
+     * @param int $num_digits the number of digits
+     * @return string a short-lived code
+     */
+    function shortCode($num_digits = 6) {
+        $base = new BigNum(self::bytes($num_digits), 256);
+        return substr($base->val(10), -$num_digits);
     }
 }
 ?>

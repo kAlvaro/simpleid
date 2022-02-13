@@ -2,7 +2,7 @@
 /*
  * SimpleID
  *
- * Copyright (C) Kelvin Mo 2009
+ * Copyright (C) Kelvin Mo 2009-2022
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -257,7 +257,7 @@ class MyModule extends Module {
         $user = $auth->getUser();
         $tpl = new \Template();
 
-        $event->addBlock('welcome', $this->f3->get('intl.core.my.logged_in_as', $user->getDisplayName(), $user['uid']), -10, [
+        $event->addBlock('welcome', $this->f3->get('intl.core.my.logged_in_as', [ $user->getDisplayName(), $user['uid'] ]), -10, [
             'title' => $this->f3->get('intl.core.my.welcome_title')
         ]);
 

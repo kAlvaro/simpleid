@@ -9,5 +9,7 @@ package-lock.json
 node_modules/
 
 log/
+www/.htaccess
+www/config.php
 www/vendor/
 www/html/.sass-cache/
